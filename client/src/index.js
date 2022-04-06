@@ -1,12 +1,17 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { ThemeProvider } from "@mui/material/styles";
 
-ReactDOM.render(
+import App from "./App";
+import zoniaTheme from "./theme/zoniaTheme";
+
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+root.render(
 	<BrowserRouter>
-		<App />
-	</BrowserRouter>,
-	document.getElementById("root")
+		<ThemeProvider theme={zoniaTheme}>
+			<App />
+		</ThemeProvider>
+	</BrowserRouter>
 );
