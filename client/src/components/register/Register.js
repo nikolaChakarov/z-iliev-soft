@@ -20,9 +20,11 @@ const CustomTextFiled = styled(TextField)(({ theme }) => ({
 }));
 
 const Register = () => {
-	const sendInfo = () => {
-		console.log(state);
-	};
+	const { registerUser } = useContext(GlobalContext);
+
+	function sendInfo() {
+		registerUser(state);
+	}
 
 	const { state, onInputChanged, onSubmit } = useForm(sendInfo, {
 		username: "",
