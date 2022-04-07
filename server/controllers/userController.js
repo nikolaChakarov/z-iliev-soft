@@ -7,7 +7,7 @@ const User = require("../models/User");
 
 /* register user controller */
 async function registerUser(req, res) {
-	const { username, email, password, password2 } = req.body;
+	const { username, email, password } = req.body;
 
 	try {
 		const errors = validationResult(req);
@@ -21,9 +21,17 @@ async function registerUser(req, res) {
 		const currentUser = new User({ username, email, password: cryptedPass });
 		await currentUser.save();
 
-		console.log(currentUser);
+		const usertoken = jwt.sign(
+			{
+				id: currentUser._id,
+				username: currentUser.username,
+				email: currentUser.email,
+			},
+			process.env.SECRET,
+			{ expiresIn: "1d" }
+		);
 
-		res.json(cryptedPass);
+		res.status(200).json({ username, email, usertoken });
 	} catch (err) {
 		console.error(err);
 		res.status(400).json(err.message);

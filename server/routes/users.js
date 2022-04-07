@@ -7,10 +7,10 @@ const { registerUser, getAllUsers } = require("../controllers/userController");
 router.post(
 	"/register",
 	[
-		check("username").exists(),
-		check("password").exists(),
+		check("username").notEmpty(),
+		check("password").notEmpty(),
 		check("password2")
-			.exists()
+			.notEmpty()
 			.custom((val, { req }) => val === req.body.password),
 	],
 	registerUser
