@@ -1,8 +1,10 @@
+import { useContext } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 import { AppBar, Box, Toolbar, Container, Link } from "@mui/material";
 import { styled } from "@mui/system";
 
+import { GlobalContext } from "../context/GlobalState";
 import generateURL from "../utils/generateURL";
 
 const MenuLink = styled(Link)(({ theme }) => ({
@@ -29,17 +31,27 @@ const Navigation = () => {
 		"Logout",
 	];
 
+	const authLinks = ["Login", "Register"];
+
+	const { adminToken } = useContext(GlobalContext);
+
 	return (
 		<AppBar position="static">
-			<Container maxWidth="xl">
-				<Toolbar sx={{ backroundColor: "red" }}>
+			<Container maxWidth="xl" sx={{ padding: 0 }}>
+				<Toolbar
+					sx={{
+						"&.MuiToolbar-root": {
+							padding: 0,
+						},
+					}}
+				>
 					<MenuLink
 						sx={{
 							fontWeight: "bold",
 							"&:last-of-type": { marginRight: "auto" },
 						}}
 						component={ReactRouterLink}
-						to={`/${generateURL("GoHealty Admin")}`}
+						to={`/`}
 					>
 						GoHealty Admin
 					</MenuLink>
@@ -49,21 +61,21 @@ const Navigation = () => {
 							display: "flex",
 						}}
 					>
-						{links.map((l, i) => {
-							return (
-								<MenuLink
-									key={i}
-									component={ReactRouterLink}
-									to={`/${generateURL(l)}`}
-								>
-									{l}
-								</MenuLink>
-							);
-						})}
+						{adminToken
+							? links.map((l, i) => <LinkItem linkname={l} key={i} />)
+							: authLinks.map((l, i) => <LinkItem linkname={l} key={i} />)}
 					</Box>
 				</Toolbar>
 			</Container>
 		</AppBar>
+	);
+};
+
+const LinkItem = ({ linkname }) => {
+	return (
+		<MenuLink component={ReactRouterLink} to={`/${generateURL(linkname)}`}>
+			{linkname}
+		</MenuLink>
 	);
 };
 
