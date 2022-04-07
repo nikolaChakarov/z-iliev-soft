@@ -7,17 +7,20 @@ import { Box } from "@mui/material";
 import { GlobalContext } from "./context/GlobalState";
 
 import Navigation from "./components/Navigation";
+
+import Register from "./components/register/Register";
+import Login from "./components/login/Login";
+import Logout from "./components/logout/Logout";
+
 import Home from "./components/Home";
 import Users from "./components/Users";
 
-import Register from "./components/register/Register";
-
 const App = () => {
-	const { adminToken } = useContext(GlobalContext);
+	const { userToken } = useContext(GlobalContext);
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!adminToken) {
+		if (!userToken) {
 			navigate({ pathname: "/" });
 		}
 	}, []);
@@ -35,6 +38,8 @@ const App = () => {
 
 			<Routes>
 				<Route path="/register" element={<Register />} />
+				<Route path="/login" element={<Login />} />
+				<Route path="/logout" element={<Logout />} />
 
 				<Route path="/" element={<Home />} />
 				<Route path="/users" element={<Users />} />

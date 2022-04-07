@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 import { AppBar, Box, Toolbar, Container, Link } from "@mui/material";
@@ -33,7 +33,9 @@ const Navigation = () => {
 
 	const authLinks = ["Login", "Register"];
 
-	const { adminToken } = useContext(GlobalContext);
+	const { userToken } = useContext(GlobalContext);
+
+	useEffect(() => {}, [userToken]);
 
 	return (
 		<AppBar position="static">
@@ -61,7 +63,7 @@ const Navigation = () => {
 							display: "flex",
 						}}
 					>
-						{adminToken
+						{userToken
 							? links.map((l, i) => <LinkItem linkname={l} key={i} />)
 							: authLinks.map((l, i) => <LinkItem linkname={l} key={i} />)}
 					</Box>

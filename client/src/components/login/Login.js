@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { useNavigate, Link as ReactRouterLink } from "react-router-dom";
 
 import { styled } from "@mui/system";
 import { TextField, Box, Link, Typography } from "@mui/material";
@@ -19,18 +19,16 @@ const CustomTextFiled = styled(TextField)(({ theme }) => ({
 	marginBottom: 20,
 }));
 
-const Register = () => {
-	const { registerUser } = useContext(GlobalContext);
+const Login = () => {
+	const { loginUser } = useContext(GlobalContext);
 
 	function sendInfo() {
-		registerUser(state);
+		loginUser(state);
 	}
 
 	const { state, onInputChanged, onSubmit } = useForm(sendInfo, {
-		username: "",
 		email: "",
 		password: "",
-		password2: "",
 	});
 
 	return (
@@ -57,14 +55,6 @@ const Register = () => {
 				autoComplete="off"
 			>
 				<CustomTextFiled
-					id="username"
-					label="user name"
-					variant="outlined"
-					name="username"
-					value={state.username}
-					onChange={onInputChanged}
-				/>
-				<CustomTextFiled
 					id="email"
 					label="email"
 					variant="outlined"
@@ -80,17 +70,6 @@ const Register = () => {
 					value={state.password}
 					onChange={onInputChanged}
 				/>
-				<CustomTextFiled
-					sx={{
-						marginBottom: 0,
-					}}
-					id="password2"
-					label="repeat password"
-					variant="outlined"
-					name="password2"
-					value={state.password2}
-					onChange={onInputChanged}
-				/>
 
 				<Box
 					sx={{
@@ -100,17 +79,17 @@ const Register = () => {
 						mt: 2,
 					}}
 				>
-					<CustomButton type="submit">Register</CustomButton>
+					<CustomButton type="submit">Login</CustomButton>
 					<Typography variant="p">
-						Already have an account? Please,{" "}
+						Don't have an account? Please,{" "}
 						<Link
 							component={ReactRouterLink}
-							to="/login"
+							to="/register"
 							sx={{
 								fontWeight: "bold",
 							}}
 						>
-							login
+							register
 						</Link>
 					</Typography>
 				</Box>
@@ -119,4 +98,4 @@ const Register = () => {
 	);
 };
 
-export default Register;
+export default Login;

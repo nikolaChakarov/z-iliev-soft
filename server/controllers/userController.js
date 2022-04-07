@@ -34,7 +34,42 @@ async function registerUser(req, res) {
 		res.status(200).json({ username, email, usertoken });
 	} catch (err) {
 		console.error(err);
-		res.status(400).json(err.message);
+		res.status(400).json({ status: "fail", message: err });
+	}
+}
+
+/* login user controller */
+async function loginUser(req, res) {
+	try {
+		const { email, password } = req.body;
+
+		const currentUser = await User.findOne({ email });
+
+		if (!currentUser) {
+			res.status(400).json({ status: "fail", message: "Invalid credentials" });
+			return;
+		}
+
+		const decrypedPass = await bcrypt.compare(password, currentUser.password);
+
+		if (!decrypedPass) {
+			res.status(400).json({ status: "fail", message: "Invalid credentials" });
+			return;
+		}
+
+		const usertoken = jwt.sign(
+			{
+				id: currentUser._id,
+				username: currentUser.username,
+				email: currentUser.email,
+			},
+			process.env.SECRET,
+			{ expiresIn: "1d" }
+		);
+
+		res.status(200).json({ username: currentUser.username, email, usertoken });
+	} catch (err) {
+		req.status(400).json({ status: "fail", message: err });
 	}
 }
 
@@ -45,5 +80,6 @@ function getAllUsers(req, res) {
 
 module.exports = {
 	registerUser,
+	loginUser,
 	getAllUsers,
 };

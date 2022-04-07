@@ -1,7 +1,11 @@
 const router = require("express").Router();
 const { check } = require("express-validator");
 
-const { registerUser, getAllUsers } = require("../controllers/userController");
+const {
+	registerUser,
+	loginUser,
+	getAllUsers,
+} = require("../controllers/userController");
 
 /* register user */
 router.post(
@@ -15,6 +19,9 @@ router.post(
 	],
 	registerUser
 );
+
+/* login user */
+router.post("/login", loginUser);
 
 /* get all users */
 router.get("/", getAllUsers);
