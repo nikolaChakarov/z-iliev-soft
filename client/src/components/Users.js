@@ -1,9 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import { Box, Divider } from "@mui/material";
 
 import CustomButton from "./custom/CustomButton";
 import UsersOrdersAddressesTabs from "./UsersOrdersAddressesTabs";
 
 const Users = () => {
+	const navigate = useNavigate();
+
 	return (
 		<Box
 			sx={{
@@ -18,6 +21,7 @@ const Users = () => {
 					sx={{
 						margin: 2,
 					}}
+					onClick={() => navigate("/create-user")}
 				>
 					Create User
 				</CustomButton>

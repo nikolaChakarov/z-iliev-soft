@@ -8,11 +8,7 @@ import { GlobalContext } from "../../context/GlobalState";
 import useForm from "../../utils/useForm";
 
 import CustomButton from "../custom/CustomButton";
-
-const CustomBox = styled(Box)(({ theme }) => ({
-	...theme,
-	boxShadow: theme.shadows[2],
-}));
+import CustomBox from "../custom/CustomBox";
 
 const CustomTextFiled = styled(TextField)(({ theme }) => ({
 	...theme,

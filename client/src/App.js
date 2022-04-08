@@ -14,6 +14,7 @@ import Logout from "./components/logout/Logout";
 
 import Home from "./components/Home";
 import Users from "./components/Users";
+import CreateUserForm from "./components/CreateUserForm";
 
 const App = () => {
 	const { userToken } = useContext(GlobalContext);
@@ -30,7 +31,6 @@ const App = () => {
 			sx={{
 				display: "flex",
 				flexDirection: "column",
-				backgroundColor: "whitesmoke",
 				height: "100vh",
 			}}
 		>
@@ -43,6 +43,8 @@ const App = () => {
 
 				<Route path="/" element={<Home />} />
 				<Route path="/users" element={<Users />} />
+
+				<Route path="/create-user" element={<CreateUserForm />} />
 			</Routes>
 		</Box>
 	);
