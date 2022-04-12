@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { alpha, styled } from "@mui/system";
+
+import SubscribeModal from "./modals/SubscribeModal";
 
 import {
 	Box,
-	InputBase,
 	InputLabel,
 	Typography,
 	Divider,
@@ -15,27 +16,15 @@ import {
 
 import CustomBox from "./custom/CustomBox";
 import CustomButton from "./custom/CustomButton";
+import CustomInputBase from "./custom/CustomInputBase";
 
 import useForm from "../utils/useForm";
-
-const CustomTextFiled = styled(InputBase)(({ theme }) => ({
-	width: "100%",
-	"& .MuiInputBase-input": {
-		padding: 5,
-		color: "#777",
-		border: `1px groove #fff`,
-		transition: theme.transitions.create([
-			"border-color",
-			"background-color",
-			"box-shadow",
-		]),
-	},
-}));
 
 const CreateUserForm = () => {
 	const navigate = useNavigate();
 
-	const { state, onInputChanged, onSubmit } = useForm(addUser, {
+	const [modalClick, setModalClick] = useState(false);
+	const { state, setState, onInputChanged, onSubmit } = useForm(addUser, {
 		name: "",
 		facebook: "",
 		email: "",
@@ -49,6 +38,7 @@ const CreateUserForm = () => {
 		subscriptionPlan: "",
 		cardHolderName: "",
 		cardNumber: "",
+		cardExpDate: "",
 	});
 
 	function addUser() {
@@ -69,6 +59,17 @@ const CreateUserForm = () => {
 				flexDirection: "column",
 			}}
 		>
+			{/* modal */}
+			{modalClick && (
+				<SubscribeModal
+					modalClick={modalClick}
+					setModalClick={setModalClick}
+					setState={setState}
+					onSubmit={onSubmit}
+				/>
+			)}
+			{/* end modal */}
+
 			<Typography
 				variant="h5"
 				sx={{
@@ -80,6 +81,7 @@ const CreateUserForm = () => {
 			>
 				Personal Info
 			</Typography>
+
 			<Divider sx={{ marginBottom: 2 }} />
 
 			{/* top inner wrapper box */}
@@ -223,7 +225,10 @@ const CreateUserForm = () => {
 
 			{/* buttons set at the form's bottom */}
 			<Box sx={{ marginTop: "auto" }}>
-				<CustomButton type="submit">Create Subscription</CustomButton>
+				<CustomButton type="button" onClick={() => setModalClick(true)}>
+					Create Subscription
+				</CustomButton>
+
 				<CustomButton
 					onClick={() => navigate("/users")}
 					sx={{
@@ -242,13 +247,14 @@ const CreateUserForm = () => {
 	);
 };
 
+/* create custom input set */
 const CustomInputSet = ({ labelname, elementname, val, onInputChanged }) => {
 	return (
 		<>
 			<InputLabel sx={{ fontWeight: "600", mb: 1 }} htmlFor={elementname}>
 				{labelname}
 			</InputLabel>
-			<CustomTextFiled
+			<CustomInputBase
 				id={elementname}
 				name={elementname}
 				value={val}
