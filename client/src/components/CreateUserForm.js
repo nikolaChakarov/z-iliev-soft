@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../context/GlobalState";
 
 import SubscribeModal from "./modals/SubscribeModal";
 
@@ -23,6 +24,8 @@ import useForm from "../utils/useForm";
 const CreateUserForm = () => {
 	const navigate = useNavigate();
 
+	const { createUser } = useContext(GlobalContext);
+
 	const [modalClick, setModalClick] = useState(false);
 	const { state, setState, onInputChanged, onSubmit } = useForm(addUser, {
 		name: "",
@@ -42,7 +45,7 @@ const CreateUserForm = () => {
 	});
 
 	function addUser() {
-		console.log(state);
+		createUser(state);
 	}
 
 	return (

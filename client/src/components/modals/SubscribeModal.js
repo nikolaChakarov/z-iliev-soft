@@ -88,13 +88,18 @@ const SubscribeModal = ({ modalClick, setModalClick, setState, onSubmit }) => {
 		}));
 	};
 
-	function handleCardNumber(e) {
+	const handleCardNumber = (e) => {
 		const regex = /^([\d]+\s?)([\d]+\s?)?([\d]+\s?)?([\d]+)?$/g;
 		const res = regex.test(e.target.value);
 
+		if (!res) {
+			setShowErrorEl(true);
+			setErrorMessage("Plese, enter your card number");
+		}
+
 		if (cardValues.cardNumber.length > 18) {
 			setShowErrorEl(true);
-			setErrorMessage("Card Number length is full...");
+			setErrorMessage("16 digits only");
 
 			setCardValues((prev) => ({
 				...prev,
@@ -108,15 +113,29 @@ const SubscribeModal = ({ modalClick, setModalClick, setState, onSubmit }) => {
 			...prev,
 			cardNumber: formatCardNumberStr(e.target.value),
 		}));
+	};
 
-		if (!res) {
+	const handleCardExpDate = (e) => {
+		if (cardValues.cardExpDate.length > 8) {
 			setShowErrorEl(true);
-			setErrorMessage("Card Number...is a NUMBER");
+			setErrorMessage("Please, enter data in format: MM/YY CVC");
+
+			setCardValues((prev) => ({
+				...prev,
+				cardExpDate: prev.cardExpDate.substring(0, 8),
+			}));
+
+			return;
 		}
-	}
+
+		setCardValues((prev) => ({
+			...prev,
+			cardExpDate: formatExpCardDate(e.target.value),
+		}));
+	};
 
 	const formatCardNumberStr = (str) => {
-		let res = str.split(/[\s]*/).reduce((acc, curr, i) => {
+		let formated = str.split(/[\s]*/).reduce((acc, curr, i) => {
 			if (i % 4 === 0 && i !== 0) {
 				acc.push(" ");
 				acc.push(curr);
@@ -126,16 +145,57 @@ const SubscribeModal = ({ modalClick, setModalClick, setState, onSubmit }) => {
 			return acc;
 		}, []);
 
-		return res.join("");
+		return formated.join("");
 	};
 
-	const enableSubscription = (data) => {};
+	const formatExpCardDate = (str) => {
+		let formated = str.split(/[\s\/]*/).reduce((acc, curr, i) => {
+			if (i === 2) {
+				acc.push("/");
+				acc.push(curr);
+				return acc;
+			}
+
+			if (i === 4) {
+				acc.push(" ");
+				acc.push(curr);
+				return acc;
+			}
+
+			acc.push(curr);
+			return acc;
+		}, []);
+
+		return formated.join("");
+	};
+
+	const enableSubscription = () => {
+		if (cardValues.cardHolderName === "" || cardValues.cardNumber === "") {
+			setValidateCard(false);
+			return;
+		}
+
+		if (cardValues.cardNumber.length < 19) {
+			setValidateCard(false);
+			return;
+		}
+
+		const expDateRegex = /^[\d]{2}\/[\d]{2}\s[\d]{3}$/;
+		if (!expDateRegex.test(cardValues.cardExpDate)) {
+			setValidateCard(false);
+			return;
+		}
+
+		setValidateCard(true);
+	};
 
 	useEffect(() => {
 		updateState(cardValues);
 	}, [selectValues, cardValues]);
 
-	useEffect(() => {}, [cardValues.cardNumber, showErrorEl]);
+	useEffect(() => {
+		enableSubscription();
+	}, [cardValues, validateCard]);
 
 	return (
 		<Box>
@@ -248,7 +308,7 @@ const SubscribeModal = ({ modalClick, setModalClick, setState, onSubmit }) => {
 							placeholder={"MM/YY CVC"}
 							name="cardExpDate"
 							value={cardValues.cardExpDate}
-							onChange={handleCardChange}
+							onChange={handleCardExpDate}
 						/>
 					</Box>
 
@@ -257,7 +317,7 @@ const SubscribeModal = ({ modalClick, setModalClick, setState, onSubmit }) => {
 						<CustomButton
 							type="button"
 							sx={validateCard ? null : disableBttn}
-							// disabled={!validateCard}
+							disabled={!validateCard}
 							onClick={(e) => {
 								onSubmit(e);
 								setModalClick(false);

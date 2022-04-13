@@ -12,7 +12,10 @@ const initState = {
 	users: [{ name: "user test" }],
 	registerUser: (userinfo) => {},
 	loginUser: (userInfo) => {},
+	createUser: (userInfo) => {},
 };
+
+const SERVER_URL = "http://localhost:5000/api";
 
 export const GlobalContext = createContext(initState);
 
@@ -74,6 +77,29 @@ export const GlobalProvider = ({ children }) => {
 		}
 	};
 
+	const createUser = async (user) => {
+		try {
+			const dbResponse = await (
+				await fetch(`${SERVER_URL}/users/create`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"x-auth-token": state.userToken,
+					},
+					body: JSON.stringify(user),
+				})
+			).json();
+
+			if (!dbResponse) {
+				throw new Error(dbResponse);
+			}
+
+			console.log(dbResponse);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
 	useEffect(() => {
 		if (state.userToken) {
 			localStorage.setItem("userToken", JSON.stringify(state.userToken));
@@ -89,6 +115,7 @@ export const GlobalProvider = ({ children }) => {
 				dispatch,
 				registerUser,
 				loginUser,
+				createUser,
 			}}
 		>
 			{children}

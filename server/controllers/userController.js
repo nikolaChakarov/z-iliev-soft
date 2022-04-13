@@ -6,7 +6,7 @@ const { validationResult } = require("express-validator");
 const User = require("../models/User");
 
 /* register user controller */
-async function registerUser(req, res) {
+exports.registerUser = async function (req, res) {
 	const { username, email, password } = req.body;
 
 	try {
@@ -36,10 +36,10 @@ async function registerUser(req, res) {
 		console.error(err);
 		res.status(400).json({ status: "fail", message: err });
 	}
-}
+};
 
 /* login user controller */
-async function loginUser(req, res) {
+exports.loginUser = async function (req, res) {
 	try {
 		const { email, password } = req.body;
 
@@ -71,15 +71,4 @@ async function loginUser(req, res) {
 	} catch (err) {
 		req.status(400).json({ status: "fail", message: err });
 	}
-}
-
-/* get all users from database controller */
-function getAllUsers(req, res) {
-	res.status(200).json({ status: "success", message: "ok!" });
-}
-
-module.exports = {
-	registerUser,
-	loginUser,
-	getAllUsers,
 };
