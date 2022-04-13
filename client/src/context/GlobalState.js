@@ -12,7 +12,7 @@ const initState = {
 	users: [{ name: "user test" }],
 	registerUser: (userinfo) => {},
 	loginUser: (userInfo) => {},
-	createUser: (userInfo) => {},
+	createCustomer: (customerInfo) => {},
 };
 
 const SERVER_URL = "http://localhost:5000/api";
@@ -77,24 +77,22 @@ export const GlobalProvider = ({ children }) => {
 		}
 	};
 
-	const createUser = async (user) => {
+	const createCustomer = async (customer) => {
 		try {
 			const dbResponse = await (
-				await fetch(`${SERVER_URL}/users/create`, {
+				await fetch(`${SERVER_URL}/customers/create`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
 						"x-auth-token": state.userToken,
 					},
-					body: JSON.stringify(user),
+					body: JSON.stringify(customer),
 				})
 			).json();
 
 			if (!dbResponse) {
 				throw new Error(dbResponse);
 			}
-
-			console.log(dbResponse);
 		} catch (err) {
 			console.log(err);
 		}
@@ -115,7 +113,7 @@ export const GlobalProvider = ({ children }) => {
 				dispatch,
 				registerUser,
 				loginUser,
-				createUser,
+				createCustomer,
 			}}
 		>
 			{children}

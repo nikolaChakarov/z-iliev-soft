@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../context/GlobalState";
 
@@ -13,7 +13,11 @@ import {
 	Radio,
 	FormControlLabel,
 	TextareaAutosize,
+	Alert,
+	IconButton,
 } from "@mui/material";
+
+import CloseIcon from "@mui/icons-material/Close";
 
 import CustomBox from "./custom/CustomBox";
 import CustomButton from "./custom/CustomButton";
@@ -21,13 +25,13 @@ import CustomInputBase from "./custom/CustomInputBase";
 
 import useForm from "../utils/useForm";
 
-const CreateUserForm = () => {
+const CreateCustomerForm = () => {
 	const navigate = useNavigate();
 
-	const { createUser } = useContext(GlobalContext);
+	const { createCustomer } = useContext(GlobalContext);
 
-	const [modalClick, setModalClick] = useState(false);
-	const { state, setState, onInputChanged, onSubmit } = useForm(addUser, {
+	const [showModal, setShowModal] = useState(false);
+	const initState = {
 		name: "",
 		facebook: "",
 		email: "",
@@ -42,11 +46,68 @@ const CreateUserForm = () => {
 		cardHolderName: "",
 		cardNumber: "",
 		cardExpDate: "",
-	});
+	};
+
+	const { state, setState, onInputChanged, onSubmit } = useForm(
+		addUser,
+		initState
+	);
+
+	const [showAlert, setShowAlert] = useState({});
+	const [showSuccess, setShowSuccess] = useState(false);
+	const handleAlert = (e) => {
+		const currentAlert = e.currentTarget.dataset.name;
+
+		setShowAlert((prev) => ({
+			...prev,
+			[currentAlert]: false,
+		}));
+	};
+
+	const handleSubscription = () => {
+		const requiredFields = ["name", "email", "billingAddress", "password"];
+		let pass = true;
+
+		requiredFields.forEach((el) => {
+			if (state[el] === "") {
+				pass = false;
+				setShowAlert((prev) => ({
+					...prev,
+					[el]: true,
+				}));
+			}
+		});
+
+		if (state.password !== state.password2) {
+			pass = false;
+			setShowAlert((prev) => ({
+				...prev,
+				password2: true,
+			}));
+		}
+
+		if (pass) {
+			setShowModal(true);
+		}
+	};
 
 	function addUser() {
-		createUser(state);
+		createCustomer(state);
+
+		setState({ ...initState });
+
+		setShowSuccess(true);
 	}
+
+	useEffect(() => {
+		setShowAlert({});
+	}, [state]);
+
+	useEffect(() => {
+		setTimeout(() => {
+			setShowSuccess(false);
+		}, 5000);
+	}, [showSuccess]);
 
 	return (
 		<CustomBox
@@ -63,10 +124,10 @@ const CreateUserForm = () => {
 			}}
 		>
 			{/* modal */}
-			{modalClick && (
+			{showModal && (
 				<SubscribeModal
-					modalClick={modalClick}
-					setModalClick={setModalClick}
+					showModal={showModal}
+					setShowModal={setShowModal}
 					setState={setState}
 					onSubmit={onSubmit}
 				/>
@@ -101,6 +162,23 @@ const CreateUserForm = () => {
 							val={state.name}
 							onInputChanged={onInputChanged}
 						/>
+
+						<Alert
+							severity="error"
+							action={
+								<IconButton
+									color="inherit"
+									size="small"
+									onClick={handleAlert}
+									data-name="name"
+								>
+									<CloseIcon fontSize="inherit" />
+								</IconButton>
+							}
+							sx={{ mb: 2, display: showAlert["name"] ? "flex" : "none" }}
+						>
+							Please, type a name
+						</Alert>
 					</Box>
 
 					<Box sx={{ marginBottom: 2 }}>
@@ -119,6 +197,23 @@ const CreateUserForm = () => {
 							val={state.email}
 							onInputChanged={onInputChanged}
 						/>
+
+						<Alert
+							severity="error"
+							action={
+								<IconButton
+									color="inherit"
+									size="small"
+									onClick={handleAlert}
+									data-name="email"
+								>
+									<CloseIcon fontSize="inherit" />
+								</IconButton>
+							}
+							sx={{ mb: 2, display: showAlert["email"] ? "flex" : "none" }}
+						>
+							Please, type an email
+						</Alert>
 					</Box>
 
 					<Box sx={{ marginBottom: 2 }}>
@@ -128,6 +223,22 @@ const CreateUserForm = () => {
 							val={state.password}
 							onInputChanged={onInputChanged}
 						/>
+						<Alert
+							severity="error"
+							action={
+								<IconButton
+									color="inherit"
+									size="small"
+									onClick={handleAlert}
+									data-name="password"
+								>
+									<CloseIcon fontSize="inherit" />
+								</IconButton>
+							}
+							sx={{ mb: 2, display: showAlert["password"] ? "flex" : "none" }}
+						>
+							Please, enter your password
+						</Alert>
 					</Box>
 
 					<Box sx={{ marginBottom: 2 }}>
@@ -137,6 +248,22 @@ const CreateUserForm = () => {
 							val={state.password2}
 							onInputChanged={onInputChanged}
 						/>
+						<Alert
+							severity="error"
+							action={
+								<IconButton
+									color="inherit"
+									size="small"
+									onClick={handleAlert}
+									data-name="password2"
+								>
+									<CloseIcon fontSize="inherit" />
+								</IconButton>
+							}
+							sx={{ mb: 2, display: showAlert["password2"] ? "flex" : "none" }}
+						>
+							The passwords are not the same
+						</Alert>
 					</Box>
 				</CustomBox>
 
@@ -206,6 +333,26 @@ const CreateUserForm = () => {
 								outline: "none",
 							}}
 						/>
+
+						<Alert
+							severity="error"
+							action={
+								<IconButton
+									color="inherit"
+									size="small"
+									onClick={handleAlert}
+									data-name="billingAddress"
+								>
+									<CloseIcon fontSize="inherit" />
+								</IconButton>
+							}
+							sx={{
+								mb: 2,
+								display: showAlert["billingAddress"] ? "flex" : "none",
+							}}
+						>
+							Please, type your Billing Address
+						</Alert>
 					</Box>
 
 					{/* zip code */}
@@ -226,9 +373,28 @@ const CreateUserForm = () => {
 
 			<Divider sx={{ marginY: 2 }} />
 
+			<Alert
+				action={
+					<IconButton
+						color="inherit"
+						size="small"
+						onClick={() => setShowSuccess(false)}
+					>
+						<CloseIcon fontSize="inherit" />
+					</IconButton>
+				}
+				sx={{
+					mb: 2,
+					boxShadow: (theme) => theme.shadows[1],
+					display: showSuccess ? "flex" : "none",
+				}}
+			>
+				Customer has been successfully added!
+			</Alert>
+
 			{/* buttons set at the form's bottom */}
 			<Box sx={{ marginTop: "auto" }}>
-				<CustomButton type="button" onClick={() => setModalClick(true)}>
+				<CustomButton type="button" onClick={handleSubscription}>
 					Create Subscription
 				</CustomButton>
 
@@ -267,4 +433,4 @@ const CustomInputSet = ({ labelname, elementname, val, onInputChanged }) => {
 	);
 };
 
-export default CreateUserForm;
+export default CreateCustomerForm;

@@ -14,7 +14,7 @@ import Logout from "./components/logout/Logout";
 
 import Home from "./components/Home";
 import Users from "./components/Users";
-import CreateUserForm from "./components/CreateUserForm";
+import CreateCustomerForm from "./components/CreateCustomerForm";
 
 const App = () => {
 	const { userToken } = useContext(GlobalContext);
@@ -44,7 +44,7 @@ const App = () => {
 				<Route path="/" element={<Home />} />
 				<Route path="/users" element={<Users />} />
 
-				<Route path="/create-user" element={<CreateUserForm />} />
+				<Route path="/create-user" element={<CreateCustomerForm />} />
 			</Routes>
 		</Box>
 	);

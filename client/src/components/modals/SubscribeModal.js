@@ -45,7 +45,7 @@ const CustomTitle = styled(Typography)(({ theme }) => ({
 	justifyContent: "flex-end",
 }));
 
-const SubscribeModal = ({ modalClick, setModalClick, setState, onSubmit }) => {
+const SubscribeModal = ({ showModal, setShowModal, setState, onSubmit }) => {
 	const [selectValues, setSelectValues] = useState({
 		subscriptionType: "",
 		subscriptionPlan: "",
@@ -199,7 +199,7 @@ const SubscribeModal = ({ modalClick, setModalClick, setState, onSubmit }) => {
 
 	return (
 		<Box>
-			<Modal open={modalClick} onClose={() => setModalClick(false)}>
+			<Modal open={showModal} onClose={() => setShowModal(false)}>
 				<Box sx={style}>
 					{/* ERROR MESSAGE IF NEEDED */}
 					{showErrorEl && (
@@ -320,14 +320,14 @@ const SubscribeModal = ({ modalClick, setModalClick, setState, onSubmit }) => {
 							disabled={!validateCard}
 							onClick={(e) => {
 								onSubmit(e);
-								setModalClick(false);
+								setShowModal(false);
 							}}
 						>
 							Subscribe
 						</CustomButton>
 
 						<CustomButton
-							onClick={() => setModalClick(false)}
+							onClick={() => setShowModal(false)}
 							sx={{
 								backgroundColor: "#f44336",
 								ml: 1,
